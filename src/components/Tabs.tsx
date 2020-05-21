@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Route,
   NavLink,
@@ -7,33 +7,35 @@ import {
 } from 'react-router-dom';
 import Post from './Post';
 
-import tabs from '../api/tabs';
-import posts from '../api/posts';
-
-const preparedTabs = tabs.map((tab: TabFromServer): TabIF => ({
-  ...tab,
-  post: posts.find((post: PostIF) => post.id === tab.content),
-}));
+import { getTabs } from '../api/getTabs';
 
 interface Props extends RouteComponentProps<TParams> {
   match: Match;
 }
 
 const Tabs: React.FC<Props> = ({ match }) => {
-  const findPost = (id: string) => preparedTabs
+  const [tabs, setTabs] = useState<TabIF[]>([]);
+
+  useEffect(() => {
+    getTabs().then(setTabs);
+  }, []);
+
+  const findPost = (id: string | number) => tabs
     .find(tab => tab.content === +id)?.post || null;
 
   return (
     <>
       <div className="ui attached tabular menu inverted brown">
-        {preparedTabs.map(tab => (
+        {tabs.map(tab => (
           <NavLink
             key={tab.content}
             className="item"
             activeClassName="active"
             to={`${match.path}/${tab.content}`}
+            data-tooltip={findPost(tab.content)?.title}
+            data-position="bottom left"
           >
-            {tab.title}
+            {`${findPost(tab.content)?.title.slice(0, 8)}...`}
           </NavLink>
         ))}
       </div>
