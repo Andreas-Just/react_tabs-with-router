@@ -19,7 +19,8 @@ const Tabs: React.FC<Props> = ({ match }) => {
   useEffect(() => {
     getTabs().then(setTabs);
   }, []);
-  const findPost = (id: string) => tabs
+
+  const findPost = (id: string | number) => tabs
     .find(tab => tab.content === +id)?.post || null;
 
   return (
@@ -31,8 +32,10 @@ const Tabs: React.FC<Props> = ({ match }) => {
             className="item"
             activeClassName="active"
             to={`${match.path}/${tab.content}`}
+            data-tooltip={findPost(tab.content)?.title}
+            data-position="bottom left"
           >
-            {tab.title}
+            {`${findPost(tab.content)?.title.slice(0, 8)}...`}
           </NavLink>
         ))}
       </div>

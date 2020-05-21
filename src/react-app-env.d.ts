@@ -1,11 +1,11 @@
 // eslint-disable-next-line
 /// <reference types="react-scripts" />
-interface TabFromServer{
+interface TabApi{
   content: number;
   title: string;
 }
 
-interface TabIF extends TabFromServer{
+interface TabIF extends TabApi{
   post?: PostIF;
 }
 
